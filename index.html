@@ -1,211 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./src/css/resert.css">
-        <link rel="stylesheet" href="./src/css/index.css">
-        <title>Pokedex - Listagem</title>
 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;800&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="./src/css/scrollbar.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./img/pokeball.png" type="image/x-icon">
+    <title>POKEDEX</title>
+</head>
 
+<body>
+    <header >
+        <img src="./img/pokemon-logo-1-1.png" alt="pokemon-logo" class="pokemon-logo">
+    </header>
+    <main>
+        <div id="pokemonList">
+            <!-- EXIBIDO PELO JAVASCRIPT -->
+        </div>
+    </main>
 
-    <body>
-        <header>
-            <a href="./index.html">
-            <img src="./src/imagens/pokeball.png" alt="pokebola" class="logo">
-            </a>
+    <script>
+        async function fetchPokemonData() {
+                const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=30");
+                const data = await response.json();
+
+                for (const pokemon of data.results) {
+                    const pokemonResponse = await fetch(pokemon.url);
+                    const pokemonData = await pokemonResponse.json();
+
+                    // Exibe os dados na tela
+                    const pokemonContainer = informacoesPokemons(pokemonData);
+
+                    // Adicionar a div do Pokémon à lista de Pokémon
+                    const pokemonList = document.getElementById("pokemonList");
+                    pokemonList.appendChild(pokemonContainer);
+
+                    // Aplica estilos
+                    tipoPokemon(pokemonContainer, pokemonData);
+                }
+        }
+
+        function tipoPokemon(pokemonCard, pokemonData) {
+            const tiposElement = pokemonCard.querySelector('.tipos');
+            const types = pokemonData.types.map(type => type.type.name);
+
+            if (types.includes('grass')) {
+                tiposElement.style.backgroundColor = "#7ac74c";
+
+            } else if (types.includes('poison')) {
+                tiposElement.style.backgroundColor = "#df67ddfb";
+
+            } else if (types.includes('fire')) {
+                tiposElement.style.backgroundColor = "#ee8130";
+
+            } else if (types.includes('water')) {
+                tiposElement.style.backgroundColor = "#6390f0";
+
+            } else if (types.includes('bug')) {
+                tiposElement.style.backgroundColor = "#a6b91a";
+
+            } else if (types.includes('flying')) {
+                tiposElement.style.background = "linear-gradient(to bottom, #6390f0 50%, gray 50%)";
+
+            }else if (types.includes('electric')) {
+                tiposElement.style.backgroundColor = "#e6c972";
+
+            }else if (types.includes('ground')) {
+                tiposElement.style.backgroundColor = "#9b7653";
+
+            }else if (types.includes('normal')) {
+                tiposElement.style.backgroundColor = "#d9dddc";
+            }
+        }
+
+        function informacoesPokemons(pokemonData) {
+            // Capturando id da div no html
+            const pokemonList = document.getElementById("pokemonList");
+
+            // Criar elementos HTML
+            const pokemonContainer = document.createElement("div");
+            pokemonContainer.classList.add("pokemon");
+
+            const types = pokemonData.types.map(type => type.type.name);
+            const abilities = pokemonData.abilities.map(ability => ability.ability.name).join(", ");
+
+            const pokemonCard = document.createElement("div");
+
+            pokemonCard.innerHTML =
+                `<ul class="listagem-pokemon">
+                    <li class="cartao-pokemon">
+                        <div class="informacoes">
+                            <h2>Nome: <strong>${pokemonData.name}</strong> </h2>
+                            <p>ID: ${pokemonData.id}</p>
+                        </div>
+                        <img src=${pokemonData.sprites.front_default} alt=${pokemonData.name} class="imagem">
+                        <ul class="tipos">
+                            <p>Tipo: ${types.join(", ")} </p>
+                        </ul>
+                        <p class="descricao" ><strong>Habilidades:</strong> ${abilities}</p>
+                    </li>
+                </ul>`;
             
-            <button id="botao-alterar-tema">
-                <img src="./src/imagens/sun.png" alt="Imagem do Sol" class="imagem-botao">
-            </button>
+            // Adicionar os elementos à div de informações do Pokémon
+            pokemonContainer.appendChild(pokemonCard);
 
+            return pokemonContainer;
+        }
 
-        </header>
+        fetchPokemonData();
+    </script>
 
-        <main>
+</body>
 
-            <ul class="listagem-pokemon">
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Bulbasaur</span>
-                        <span>#001</span>                        
-                    </div>
-                    <img src="./src/imagens/1.gif" alt="bulbasaur" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo grama">Grama</li>
-                        <li class="tipo veneno">Veneno</li>
-                    </ul>
-
-                    <p class="descricao">Há uma semente de planta em suas costas desde o dia em que este Pokémon nasceu. A semente cresce lentamente.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Ivysaur</span>
-                        <span>#002</span>                        
-                    </div>
-                    <img src="./src/imagens/2.gif" alt="ivysaur" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo grama">Grama</li>
-                        <li class="tipo veneno">Veneno</li>
-                    </ul>
-
-                    <p class="descricao">Quando o bulbo nas costas cresce, parece perder a capacidade de ficar de pé nas patas traseiras.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Venusaur</span>
-                        <span>#003</span>                        
-                    </div>
-                    <img src="./src/imagens/3.gif" alt="venusaur" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo grama">Grama</li>
-                        <li class="tipo veneno">Veneno</li>
-                    </ul>
-
-                    <p class="descricao">Sua planta floresce quando está absorvendo energia solar. Ele permanece em movimento para buscar a luz do sol.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Charmander</span>
-                        <span>#004</span>                        
-                    </div>
-                    <img src="./src/imagens/4.gif" alt="charmander" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo fogo">Fogo</li>
-                    </ul>
-
-                    <p class="descricao">Tem preferência por coisas quentes. Quando chove, diz-se que o vapor jorra da ponta de sua cauda.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Charmeleon</span>
-                        <span>#005</span>                        
-                    </div>
-                    <img src="./src/imagens/5.gif" alt="charmeleon" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo fogo">Fogo</li>
-                    </ul>
-
-                    <p class="descricao">Tem uma natureza bárbara. Em batalha, ele chicoteia sua cauda de fogo e corta com garras afiadas.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Charizard</span>
-                        <span>#006</span>                        
-                    </div>
-                    <img src="./src/imagens/6.gif" alt="charizard" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo fogo">Fogo</li>
-                        <li class="tipo voador">Voador</li>
-                    </ul>
-
-                    <p class="descricao">Ele cospe fogo que é quente o suficiente para derreter pedras. Pode causar incêndios florestais soprando chamas.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Squirtle</span>
-                        <span>#007</span>                        
-                    </div>
-                    <img src="./src/imagens/7.gif" alt="squirtle" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo agua">Água</li>
-                    </ul>
-
-                    <p class="descricao">Quando retrai seu longo pescoço em sua concha, esguicha água com força vigorosa.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Wartortle</span>
-                        <span>#008</span>                        
-                    </div>
-                    <img src="./src/imagens/8.gif" alt="wartortle" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo agua">Água</li>
-                    </ul>
-
-                    <p class="descricao">É reconhecido como um símbolo de longevidade. Se sua casca tiver algas, aquele Wartortle é muito velho.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Blastoise</span>
-                        <span>#009</span>                        
-                    </div>
-                    <img src="./src/imagens/9.gif" alt="blastoise" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo agua">Água</li>
-                    </ul>
-
-                    <p class="descricao">Ele esmaga seu inimigo sob seu corpo pesado para causar desmaios. Em uma pitada, ele se retirará para dentro de sua casca.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Caterpie</span>
-                        <span>#010</span>                        
-                    </div>
-                    <img src="./src/imagens/10.gif" alt="caterpie" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo inseto">Inseto</li>
-                    </ul>
-
-                    <p class="descricao">Para proteção, ele libera um fedor horrível da antena em sua cabeça para afastar os inimigos.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Metapod</span>
-                        <span>#011</span>                        
-                    </div>
-                    <img src="./src/imagens/11.gif" alt="metapod" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo inseto">Inseto</li>
-                    </ul>
-
-                    <p class="descricao">Está esperando o momento de evoluir. Nesta fase, só pode endurecer, por isso permanece imóvel para evitar o ataque.</p>                    
-                </li>
-
-                <li class="cartao-pokemon">
-                    <div class="informacoes">
-                        <span>Butterfree</span>
-                        <span>#012</span>                        
-                    </div>
-                    <img src="./src/imagens/12.gif" alt="butterfree" class="gif">
-
-                    <ul class="tipos">
-                        <li class="tipo inseto">Inseto</li>
-                        <li class="tipo voador">Voador</li>
-                    </ul>
-
-                    <p class="descricao">Em batalha, ele bate as asas em grande velocidade para liberar poeira altamente tóxica no ar.</p>                    
-                </li>
-            </ul>
-        </main>
-
-        <script src="./src/js/index.js"></script>
-    </body>
 </html>
