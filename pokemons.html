@@ -30,6 +30,7 @@
             opacity: 50%;
             text-transform: uppercase;
         }
+
         /*ESTILIZAÇÃO DO HEADER*/
 
         header {
@@ -108,6 +109,17 @@
             border-radius: 2rem;
             text-align: center;
         }
+
+        .imagem-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-change {
+            height: 1.5rem;
+        }
+
         /*ESTILIZAÇÃO PARA BOTÃO DE BUSCA*/
         .area-busca {
             display: flex;
@@ -204,28 +216,28 @@
 
         /*ESTILIZAÇÃO PARA TELA DE CARREGAMENTO*/
         #loader {
-			border: 12px solid #f3f3f3;
-			border-radius: 50%;
-			border-top: 12px solid #444444;
-			width: 70px;
-			height: 70px;
-			animation: spin 1s linear infinite;
-		}
+            border: 12px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 12px solid #444444;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
 
-		.center {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			margin: auto;
-		}
+        .center {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+        }
 
-		@keyframes spin {
-			100% {
-				transform: rotate(360deg);
-			}
-		}
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 
 </head>
@@ -260,6 +272,7 @@
 </body>
 
 <script>
+
     //função para mostrar tela de carregamento
     function loadingScreen() {
         document.getElementById('loader').style.display = 'block';
@@ -303,10 +316,13 @@
         } catch (error) {
             console.error('Erro ao buscar tipos de Pokémon:', error);
         } finally {
-        //finalmente esconde a tela de carregamento chamando a função
-        loadScreen();
+            //finalmente esconde a tela de carregamento chamando a função
+            loadScreen();
+
+        }
     }
-    }
+
+
     //Função para buscar os pokemons pelo tipo
     async function buscar() {
         //chama a função para mostrar a tela de carregamento
@@ -332,11 +348,13 @@
         } catch (error) {
             container.innerHTML = `<img src='./img/erroimage.webp' alt='Erro'>`;
             console.error('Erro ao buscar Pokémon:', error);
-        }finally {
-        //finalmente esconde a tela de carregamento chamando a função
-        loadScreen();
+        } finally {
+            //finalmente esconde a tela de carregamento chamando a função
+            loadScreen();
         }
     }
+
+
 
     //Função asyncrona que recebe como parametro o url de cada pokemon
     async function pokemons(url) {
@@ -347,42 +365,67 @@
             const data = await response.json();
 
             //Chama a função mostrar na Tela
-            mostrarNaTela(data.name, data.id, data.sprites.front_default, data.types);
+            mostrarNaTela(data.name, data.id, data.sprites.front_default, data.sprites.back_default, data.types);
+
         } catch (error) {
             console.error('Erro ao buscar detalhes do Pokémon:', error);
         }
+
     }
+
     //Função que mostrará na tela os card pokemon recebendo os parâmetros de cada pokemon
-    function mostrarNaTela(nome, id, img, tipo) {
-        //Constant que vai capturar o elemento
+    function mostrarNaTela(nome, id, imgFront, imgBack, tipo) {
+        // Constante que vai capturar o elemento
         const container = document.getElementById('content');
-        //Constante que vai capturar a criação de uma div
+        // Constante que vai capturar a criação de uma div
         const card = document.createElement('div');
-        //criação da lista de tipos
+        // Criação da lista de tipos
         let listaDeTipos = '';
-        //Função que vai rodar e apresentar os tipos de cada pokemon
+        // Função que vai rodar e apresentar os tipos de cada pokemon
         tipo.forEach(element => {
             listaDeTipos += `<p class="${element.type.name} type">${element.type.name}</p>`;
         });
 
-        //Criação do HTML para o card de cada pokemon
-        card.innerHTML =
-            `<div class="card">
-                <div class="nome">
-                <h3 class="title">${nome}</h3>
-                <p class="id">ID: ${id}</p>
-                </div>
-                <img src="${img}" onerror="this.src='./img/erroimage.webp'" width="96px" height="96px">
-                <div class="containerType">
-                    ${listaDeTipos}
-                <div/>
-            </div>`;
-        //Adicionando o html criado na div    
+        // Criação do HTML para o card de cada pokemon
+        card.innerHTML = `
+    <div class="card">
+        <div class="nome">
+            <h3 class="title">${nome}</h3>
+            <p class="id">ID: ${id}</p>
+        </div>
+        <div class="imagem-container">
+            <button id="btn-left" class="btn-change"> < </button>
+            <img src="${imgFront}" onerror="this.src='./img/erroimage.webp'" id="img-front" class="pokemon-image front-image" width="96px" height="96px">
+            <img src="${imgBack}" onerror="this.src='./img/erroimage.webp'" id="img-back" class="pokemon-image back-image" width="96px" height="96px" style="display: none;">
+            <button id="btn-right" class="btn-change"> > </button>
+        </div>
+        <div class="containerType">
+            ${listaDeTipos}
+        </div>
+    </div>`;
+
+        // Adicionando o html criado na div    
         container.appendChild(card);
-    }
 
-    function errorBusca() {
+        // Capturando os id das imagens e botões
+        const frontImage = card.querySelector("#img-front");
+        const backImage = card.querySelector("#img-back");
+        const btnLeft = card.querySelector("#btn-left");
+        const btnRight = card.querySelector("#btn-right");
 
+        //Fução que vai ouvir o click no botão e alterar as imagens
+        btnLeft.addEventListener('click', () => {
+            // Mostra a imagem de costas
+            frontImage.style.display = 'none';
+            backImage.style.display = 'block';
+        });
+
+        //Fução que vai ouvir o click no botão e alterar as imagens
+        btnRight.addEventListener('click', () => {
+            // Mostra a imagem de frente
+            frontImage.style.display = 'block';
+            backImage.style.display = 'none';
+        });
     }
 
 </script>
