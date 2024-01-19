@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./img/pokeball.png" type="image/x-icon">
+    <title>POKEDÉX</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #DCDCDC;
+            background-image: url(./img/background.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+            opacity: 50%;
+            text-transform: uppercase;
+        }
+        /*ESTILIZAÇÃO DO HEADER*/
+
+        header {
+            text-align: center;
+            margin: 1.5rem;
+            border: solid 2px #A9A9A9;
+            padding: 1.5rem;
+            background-color: aliceblue;
+        }
+
+        .imagem-logo {
+            width: 30%;
+        }
+
+        /*ESTILIZAÇÃO PARA O CARD DE CADA POKEMON*/
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+        }
+
+        #content {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            height: 100%;
+            width: 60%;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFFFFF;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            width: 250px;
+            height: 250px;
+            gap: 2rem;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            background-color: turquoise;
+            transform: scale(1.05);
+            border: solid 1px #00BFFF;
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type {
+            text-align: center;
+            width: 4.5rem;
+            border-radius: 2rem;
+            padding-bottom: 2%;
+        }
+
+        .containerType {
+            display: flex;
+            justify-content: center;
+            gap: 5%;
+            width: 80%;
+        }
+
+        .nome {
+            border: solid 1px #A9A9A9;
+            width: 100%;
+            border-radius: 2rem;
+            text-align: center;
+        }
+        /*ESTILIZAÇÃO PARA BOTÃO DE BUSCA*/
+        .area-busca {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        #btn-busca {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 180px;
+            cursor: pointer;
+            background-color: #3CB371;
+            color: #FFFFFF;
+        }
+
+        #btn-busca:hover {
+            transform: scale(1.05);
+            background-color: #258651;
+        }
+
+        /* estilos de cada tipo */
+        .grass {
+            background-color: #78c850;
+        }
+
+        .fire {
+            background-color: #f05030;
+        }
+
+        .flying {
+            background-color: #a890f0;
+        }
+
+        .water {
+            background-color: #6890f0;
+        }
+
+        .bug {
+            background-color: #a8b820;
+        }
+
+        .electric {
+            background-color: #f8d030;
+        }
+
+        .psychic {
+            background-color: #f85888;
+        }
+
+        .ice {
+            background-color: #98d8d8;
+        }
+
+        .dragon {
+            background-color: #7038f8;
+        }
+
+        .dark {
+            background-color: #705848;
+        }
+
+        .poison {
+            background-color: #a040a0;
+        }
+
+        .ground {
+            background-color: #e0c068;
+        }
+
+        .normal {
+            background-color: #a8a878;
+        }
+
+        .fairy {
+            background-color: #f855ba;
+        }
+
+        .fighting {
+            background-color: #903028;
+        }
+
+        .rock {
+            background-color: #b8a038;
+        }
+
+        .ghost {
+            background-color: #705898;
+        }
+
+        .steel {
+            background-color: #b8b8d0;
+        }
+
+        /*ESTILIZAÇÃO PARA TELA DE CARREGAMENTO*/
+        #loader {
+			border: 12px solid #f3f3f3;
+			border-radius: 50%;
+			border-top: 12px solid #444444;
+			width: 70px;
+			height: 70px;
+			animation: spin 1s linear infinite;
+		}
+
+		.center {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+		}
+
+		@keyframes spin {
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <section>
+            <img src="./img/pokemon-logo-1-1.png" alt="Pokemon-logo" class="imagem-logo">
+        </section>
+        <div class="area-busca">
+            <form id="tipoPokemonForm">
+                <label for="tipoPokemon"><strong>Escolha um tipo:</strong> </label>
+                <select id="tipoPokemon" name="tipoPokemon">
+                    <!-- lista pelo JavaScript -->
+                </select>
+            </form>
+
+            <button onclick="buscar()" id="btn-busca">Buscar</button>
+        </div>
+    </header>
+    <main>
+        <div id="loader" class="center"></div>
+        <div id="container">
+
+
+            <div id="content">
+                <!-- conteúdo aqui... -->
+            </div>
+        </div>
+    </main>
+
+</body>
+
+<script>
+    //função para mostrar tela de carregamento
+    function loadingScreen() {
+        document.getElementById('loader').style.display = 'block';
+    }
+    //função para esconder tela de carregamento
+    function loadScreen() {
+        document.getElementById('loader').style.display = 'none';
+    }
+
+    //Chama a função automaticamente
+    fetchPokemonTypes();
+
+    async function fetchPokemonTypes() {
+        //chama a função para mostrar a tela de carregamento
+        loadingScreen();
+        //Tratamento de erro try catch
+        try {
+            //criando constante que recebe o API do pokemon com os tipos
+            const response = await fetch('https://pokeapi.co/api/v2/type/');
+            //recebe a constante e transforma ela em um Json e guarda na constante typeData
+            const typesData = await response.json();
+
+            //Captura o id tipoPokemon para adicionar os elementos criados
+            const tipoPokemonSelect = document.getElementById('tipoPokemon');
+            //chama o for of para os resultados existentes no typesData
+            for (const type of typesData.results) { //for each não suporta operações assincronas
+                const option = document.createElement('option');
+                //Recebe os valores de url de cada tipo
+                option.value = type.url;
+                //Recebe os nomes de cada tipo
+                option.textContent = type.name.toUpperCase();//torna todas as palavras em maiusculo
+                //adiciona o option a div com id tipoPokemon
+                tipoPokemonSelect.appendChild(option);
+
+                // Exibir automaticamente o tipo "normal"
+                if (type.name === 'normal') {
+                    tipoPokemonSelect.value = type.url;
+                    buscar(); //chama a função buscar
+                }
+            }
+        } catch (error) {
+            console.error('Erro ao buscar tipos de Pokémon:', error);
+        } finally {
+        //finalmente esconde a tela de carregamento chamando a função
+        loadScreen();
+    }
+    }
+    //Função para buscar os pokemons pelo tipo
+    async function buscar() {
+        //chama a função para mostrar a tela de carregamento
+        loadingScreen();
+        //Captura a div com id content
+        const container = document.getElementById('content');
+        //Captura o select com id tipoPokemon
+        const elementSelect = document.getElementById("tipoPokemon");
+        //A constante receve o valor que estiverem presente no select
+        const typeSelected = elementSelect.value;
+        //tratamento de erro
+        try {
+            //Cria o container
+            container.innerHTML = '';//Limpa o conteudo da div
+
+            //Constante receve um await dos valores recebidos 
+            const response = await fetch(typeSelected);
+            //recebe arquivo json do response
+            const typesData = await response.json();
+
+            //para cada elemento dentro de pokemon na const typesData retoran o elemento de url de cada pokemon
+            typesData.pokemon.forEach(el => pokemons(el.pokemon.url));
+        } catch (error) {
+            container.innerHTML = `<img src='./img/erroimage.webp' alt='Erro'>`;
+            console.error('Erro ao buscar Pokémon:', error);
+        }finally {
+        //finalmente esconde a tela de carregamento chamando a função
+        loadScreen();
+        }
+    }
+
+    //Função asyncrona que recebe como parametro o url de cada pokemon
+    async function pokemons(url) {
+        try {
+            //constante que vai receber o url do que for inserido
+            const response = await fetch(url);
+            //recebe o json do url que foi inserido
+            const data = await response.json();
+
+            //Chama a função mostrar na Tela
+            mostrarNaTela(data.name, data.id, data.sprites.front_default, data.types);
+        } catch (error) {
+            console.error('Erro ao buscar detalhes do Pokémon:', error);
+        }
+    }
+    //Função que mostrará na tela os card pokemon recebendo os parâmetros de cada pokemon
+    function mostrarNaTela(nome, id, img, tipo) {
+        //Constant que vai capturar o elemento
+        const container = document.getElementById('content');
+        //Constante que vai capturar a criação de uma div
+        const card = document.createElement('div');
+        //criação da lista de tipos
+        let listaDeTipos = '';
+        //Função que vai rodar e apresentar os tipos de cada pokemon
+        tipo.forEach(element => {
+            listaDeTipos += `<p class="${element.type.name} type">${element.type.name}</p>`;
+        });
+
+        //Criação do HTML para o card de cada pokemon
+        card.innerHTML =
+            `<div class="card">
+                <div class="nome">
+                <h3 class="title">${nome}</h3>
+                <p class="id">ID: ${id}</p>
+                </div>
+                <img src="${img}" onerror="this.src='./img/erroimage.webp'" width="96px" height="96px">
+                <div class="containerType">
+                    ${listaDeTipos}
+                <div/>
+            </div>`;
+        //Adicionando o html criado na div    
+        container.appendChild(card);
+    }
+
+    function errorBusca() {
+
+    }
+
+</script>
+
+</html>
